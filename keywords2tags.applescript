@@ -1,7 +1,7 @@
 set plistFront to "<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\"><plist version=\"1.0\"><array>"
 set plistEnd to "</array></plist>"
 
-(* By Derick Fay, 2013-10-28 *)
+(* By Derick Fay, 2013-10-28; repurposed by Jeremy Kidwell, 2017-01-01*)
 (* Thanks to http://mosx.tumblr.com/post/54049528297/convert-openmeta-to-os-x-mavericks-tags-with-this for getting me started *)
 
 tell application "BibDesk"
@@ -9,7 +9,7 @@ tell application "BibDesk"
 	-- without document, there is no selection, so nothing to do
 	if (count of documents) = 0 then
 		beep
-		display dialog "No documents found." buttons {"¥"} default button 1 giving up after 3
+		display dialog "No documents found." buttons {"Â¥"} default button 1 giving up after 3
 	end if
 	set thePublications to the selection of document 1
 	
@@ -32,7 +32,9 @@ tell application "BibDesk"
 		set theFiles to POSIX path of linked files of thePub
 		
 		repeat with f in theFiles
-			do shell script "xattr -w com.apple.metadata:_kMDItemUserTags '" & plistTagString & "' " & quoted form of f
+			-- original command using xattr: do shell script "xattr -w com.apple.metadata:_kMDItemUserTags '" & plistTagString & "' " & quoted form of f
+		        -- modified to use tag for now
+			do shell script "/usr/local/Cellar/tag/0.8.1/bin/tag -a '" & tagList & "' " & quoted form of f
 		end repeat
 	end repeat
 end tell
